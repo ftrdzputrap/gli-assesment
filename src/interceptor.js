@@ -1,6 +1,4 @@
 import axios from "axios";
-import { isEmpty } from "lodash";
-import { useAuthStore } from "./stores/auth.store";
 
 const headersReg = {
   "Access-Control-Allow-Headers":
