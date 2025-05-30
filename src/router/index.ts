@@ -68,7 +68,6 @@ const router = createRouter({
 
 router.beforeEach((to, _from, next) => {
   const auth = useAuthStore();
-  console.log("auth.token", auth.token);
   const isLoggedIn = !!auth.token;
   if (!isLoggedIn && to?.meta?.type === "private") {
     next("/");

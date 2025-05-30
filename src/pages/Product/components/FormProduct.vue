@@ -11,6 +11,7 @@ import { postProduct, putProduct } from '@/services/product.service';
 import SelectCategory from "@/components/Select/Category/index.vue";
 import FileUpload from "@/components/FileUpload/index.vue";
 import InputForm from '@/components/Form/InputForm.vue';
+import ModalSubmitConfirmation from './ModalSubmitConfirmation.vue';
 
 const attrs = useAttrs();
 const props = defineProps({
@@ -22,6 +23,7 @@ const props = defineProps({
 const detail = toRef(() => props?.data);
 
 const { showLoader, hideLoader } = inject('loader');
+const { openModal, closeModal } = inject('modal');
 
 const doPost = useMutation({ mutationFn: postProduct });
 const doPut = useMutation({ mutationFn: (payload) => putProduct(detail?.value?.id, payload) });
@@ -56,7 +58,11 @@ const { data: categories, isLoading: isLoadingCategories } = useQuery({
   queryFn: getCategory
 });
 
-const onSubmit = handleSubmit((values) => {
+const onConfirmSubmit = handleSubmit((values) => {
+  openModal(ModalSubmitConfirmation, { onSubmit, props: values });
+});
+
+const onSubmit = (values) => {
   showLoader();
   const service = detail?.value?.id ? doPut : doPost
   service.mutate({
@@ -65,6 +71,7 @@ const onSubmit = handleSubmit((values) => {
     categoryId: values?.category?.id
   }, {
     onSuccess: () => {
+      closeModal();
       router.back();
       queryClient.invalidateQueries({
         predicate: (query) => query?.queryKey[0] === QK_PRODUCT
@@ -72,7 +79,7 @@ const onSubmit = handleSubmit((values) => {
     },
     onSettled: hideLoader
   });
-});
+};
 
 watch(
   detail,
@@ -89,7 +96,7 @@ watch(
   <div class="min-h-screen bg-gray-50 ">
     <div class="mx-auto bg-white shadow-md rounded-lg p-8 space-y-8">
 
-      <form @submit.prevent="onSubmit" class="space-y-6">
+      <form @submit.prevent="onConfirmSubmit" class="space-y-6">
         <InputForm name="title" label="Title" />
         <InputForm name="slug" label="Slug" />
         <InputForm name="price" label="Price" />
@@ -118,7 +125,11 @@ watch(
         </div>
 
         <!-- Submit Button -->
-        <div class="text-right">
+        <div class="flex items-center gap-2 text-right justify-end">
+          <button type="button" @click="router.back()"
+            class="inline-block bg-gray-600 text-white px-6 py-2 rounded-md hover:bg-gray-700 transition disabled:opacity-50 disabled:cursor-not-allowed">
+            Cancel
+          </button>
           <button type="submit"
             class="inline-block bg-indigo-600 text-white px-6 py-2 rounded-md hover:bg-indigo-700 transition disabled:opacity-50 disabled:cursor-not-allowed">
             Submit
