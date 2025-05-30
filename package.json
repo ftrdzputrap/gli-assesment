@@ -1,0 +1,31 @@
+{
+  "name": "testing-vue-3",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@tailwindcss/vite": "^4.1.7",
+    "@tanstack/vue-query": "^5.77.2",
+    "@vee-validate/yup": "^4.15.0",
+    "axios": "^1.9.0",
+    "pinia": "^3.0.2",
+    "pinia-plugin-persistedstate": "^4.3.0",
+    "tailwindcss": "^4.1.7",
+    "vee-validate": "^4.15.0",
+    "vue": "^3.5.13",
+    "vue-router": "^4.5.1"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^5.2.3",
+    "@vue/eslint-config-standard": "^9.0.1",
+    "eslint": "^9.27.0",
+    "eslint-plugin-vue": "^10.1.0",
+    "vite": "^6.2.4",
+    "vite-plugin-vue-devtools": "^7.7.2"
+  }
+}
