@@ -12,8 +12,8 @@ import SelectCategory from "@/components/Select/Category/index.vue";
 import FileUpload from "@/components/FileUpload/index.vue";
 import InputForm from '@/components/Form/InputForm.vue';
 import ModalSubmitConfirmation from './ModalSubmitConfirmation.vue';
+import ModalCancelConfirmation from './ModalCancelConfirmation.vue';
 
-const attrs = useAttrs();
 const props = defineProps({
   data: {
     type: Object,
@@ -43,10 +43,10 @@ const schema = yup.object({
   price: yup.string().required('Price is required').min(0, 'Price must be positive'),
   description: yup.string().required('Description is required'),
   category: yup.mixed().required('Category is required'),
-  images: yup.array().of(yup.string().required()).min(1, 'At least one image is required')
+  images: yup.array().of(yup.string().required("Image is required")).min(1, 'At least one image is required')
 });
 
-const { handleSubmit, values, errors, defineField, resetForm } = useForm({
+const { handleSubmit, values, errors, defineField, resetForm, setFieldValue } = useForm({
   validationSchema: schema,
   initialValues: defaultValues,
 });
@@ -57,6 +57,14 @@ const { data: categories, isLoading: isLoadingCategories } = useQuery({
   queryKey: ['categories'],
   queryFn: getCategory
 });
+
+const onTitleChanged = (value) => {
+  setFieldValue('slug', value.replace(/\s+/g, '-').toLowerCase());
+}
+
+const onConfirmCancel = () => {
+  openModal(ModalCancelConfirmation);
+}
 
 const onConfirmSubmit = handleSubmit((values) => {
   openModal(ModalSubmitConfirmation, { onSubmit, props: values });
@@ -97,13 +105,12 @@ watch(
     <div class="mx-auto bg-white shadow-md rounded-lg p-8 space-y-8">
 
       <form @submit.prevent="onConfirmSubmit" class="space-y-6">
-        <InputForm name="title" label="Title" />
-        <InputForm name="slug" label="Slug" />
+        <InputForm name="title" label="Title" @onValueChanged="onTitleChanged" />
+        <InputForm name="slug" label="Slug" :disabled="true" />
         <InputForm name="price" label="Price" />
         <InputForm name="description" label="Description" />
         <SelectCategory name="category" label="Category" />
 
-        <!-- Image Upload Section -->
         <div class="space-y-2">
           <label class="block text-sm font-medium text-gray-700">Images</label>
 
@@ -126,7 +133,7 @@ watch(
 
         <!-- Submit Button -->
         <div class="flex items-center gap-2 text-right justify-end">
-          <button type="button" @click="router.back()"
+          <button type="button" @click="onConfirmCancel"
             class="inline-block bg-gray-600 text-white px-6 py-2 rounded-md hover:bg-gray-700 transition disabled:opacity-50 disabled:cursor-not-allowed">
             Cancel
           </button>
@@ -139,43 +146,3 @@ watch(
     </div>
   </div>
 </template>
-
-<!-- <template>
-  <Test />
-  <div class="container mx-auto p-6">
-    <form @submit="onSubmit" class="max-w-2xl mx-auto space-y-6">
-      <div class="space-y-4">
-
-        <InputForm name="title" label="Title" />
-        <InputForm name="slug" label="Slug" />
-        <InputForm name="price" label="Price" />
-        <InputForm name="description" label="Description" />
-        <SelectCategory name="category" label="Category" />
-
-        <div>
-          <label class="block text-sm font-medium text-gray-700">Images</label>
-          <div class="mt-1 space-y-2">
-            <div v-for="(image, index) in images" :key="index" class="flex gap-2">
-              <FileUpload v-model="images[index]" class="w-full" />
-              <button type="button" @click="images.splice(index, 1)" class="px-3 py-2 text-red-600 hover:text-red-800">
-                Remove
-              </button>
-            </div>
-            <button type="button" @click="images.push('')"
-              class="mt-2 px-4 py-2 text-sm text-indigo-600 hover:text-indigo-800">
-              Add Image
-            </button>
-          </div>
-          <span v-if="errors.images" class="text-red-500 text-sm">{{ errors.images }}</span>
-        </div>
-      </div>
-
-      <div class="flex justify-end">
-        <button type="submit"
-          class="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
-          Submit
-        </button>
-      </div>
-    </form>
-  </div>
-</template> -->

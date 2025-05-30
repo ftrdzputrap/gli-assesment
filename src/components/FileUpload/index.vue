@@ -11,15 +11,6 @@
           class="absolute inset-0 opacity-0 cursor-pointer"
         />
       </label>
-
-      <button
-        type="button"
-        @click="uploadFile"
-        :disabled="!model?.name"
-        class="bg-blue-600 hover:bg-blue-700 text-white font-medium px-4 py-2 rounded-md disabled:opacity-50 disabled:cursor-not-allowed transition duration-200"
-      >
-        Upload
-      </button>
     </div>
 
     <div v-if="uploadStatus" class="mt-4 text-sm text-green-600">
@@ -46,14 +37,16 @@ const handleFileChange = (event) => {
   if (file) {
     model.value = file
     uploadStatus.value = ''
+
+    uploadFile(file)
   }
 }
 
-const uploadFile = async () => {
-  if (!model.value) return
+const uploadFile = async (file = model.value) => {
+  if (!file) return
 
   const formData = new FormData()
-  formData.append('file', model.value)
+  formData.append('file', file)
 
   showLoader();
   doUpdate.mutate(formData, {

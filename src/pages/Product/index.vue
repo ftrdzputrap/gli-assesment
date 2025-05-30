@@ -14,12 +14,16 @@ import useDebounce from '@/composable/useDebounce';
 import Input from "@/components/Input/index.vue";
 import SelectCategory from "@/components/Select/Category/index.vue";
 import { ROUTE_PRODUCT_CREATE, ROUTE_PRODUCT_UPDATE } from '@/constants/route.constant';
+import router from '@/router';
+import { useRoute } from 'vue-router';
 
 const { openModal } = inject('modal');
 
-const offset = ref(0);
+const route = useRoute();
+
+const offset = ref(parseInt(route?.query?.offset) || 0);
 const limit = ref(5);
-const [title, debouncedTitle] = useDebounce("", 500);
+const [title, debouncedTitle] = useDebounce(route.query.title, 500);
 const [price_min, debouncedPriceMin] = useDebounce("", 500);
 const [price_max, debouncedPriceMax] = useDebounce("", 500);
 const categoryId = ref("");
@@ -30,7 +34,7 @@ const queryParams = computed(() => ({
   title: debouncedTitle.value,
   price_min: debouncedPriceMin.value,
   price_max: debouncedPriceMax.value,
-  categoryId: categoryId.value
+  categoryId: categoryId.value?.id
 }))
 
 const { data, isLoading } = useQuery({
@@ -48,22 +52,30 @@ const deleteUser = (data) => {
 
 const onChangePage = (newOffset) => {
   offset.value = newOffset
+  router.push({ query: { ...route?.query, offset: newOffset } });
 }
+
+watch(title, (newTitle) => {
+  router.push({ query: { title: newTitle } });
+  offset.value = 0
+})
 
 </script>
 
 <template>
   <ProtectLayout>
-    <div class="flex items-center justify-between mb-4">
-      <div class="flex items-center gap-4">
-        <Input v-model="title" placeholder="Search..." />
+    <div class="flex flex-col items-center justify-between gap-4 mb-4 lg:flex-row">
+      <div class="grid grid-cols-4 gap-4 flex-1">
+        <Input class="col-span-4 lg:col-span-1" v-model="title" placeholder="Search..." />
         <Input v-model="price_min" placeholder="Min. Price" />
         <Input v-model="price_max" placeholder="Max. Price" />
-        <SelectCategory v-model="categoryId" placeholder="Category" />
+        <SelectCategory class="col-span-2 lg:col-span-1" v-model="categoryId" placeholder="Category" />
       </div>
-      <router-link :to="ROUTE_PRODUCT_CREATE"
-        class="bg-blue-600 px-4 py-2 text-sm rounded shadow text-white  transform transition-all hover:scale-105 hover:bg-blue-700 hover:text-white active:scale-95 hover:cursor-pointer">Add
-        Product</router-link>
+      <div class="flex-1 flex justify-end w-full">
+        <router-link :to="ROUTE_PRODUCT_CREATE"
+          class="bg-blue-600 px-4 py-2 text-sm text-center rounded shadow text-white transform transition-all hover:scale-105 hover:bg-blue-700 hover:text-white active:scale-95 hover:cursor-pointer w-full lg:w-fit">Add
+          Product</router-link>
+      </div>
     </div>
     <Table :rows="data" :headers="tableColumn" :isLoading="isLoading" @onChangePage="onChangePage"
       :pagination="{ offset, limit: 5 }">

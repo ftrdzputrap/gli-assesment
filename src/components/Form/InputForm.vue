@@ -1,6 +1,6 @@
 <template>
   <div>
-    <Input v-model="value" v-bind="attrs" />
+    <Input v-model="value" v-bind="attrs" @input="onValueChanged" />
     <label class="text-xs text-red-500" v-if="errorMessage">{{ errorMessage }}</label>
   </div>
 </template>
@@ -15,6 +15,12 @@ const attrs = useAttrs();
 const props = defineProps({
   name: String,
 });
+
+const emit = defineEmits(['onValueChanged']);
+
+const onValueChanged = (e) => {
+  emit('onValueChanged', e?.target?.value)
+}
 
 const { value, errorMessage } = useField(() => props.name);
 </script>

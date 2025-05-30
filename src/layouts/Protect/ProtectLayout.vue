@@ -1,9 +1,9 @@
 <template>
   <div>
     <Sidebar />
-    <div class="ml-64 h-full">
+    <div class="lg:ml-64 h-full">
       <Header />
-      <main class="h-full px-8 pb-10">
+      <main class="h-full px-4 lg:px-8 pb-10">
         <slot />
       </main>
     </div>
