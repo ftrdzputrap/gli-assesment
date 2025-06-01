@@ -1,5 +1,5 @@
 <template>
-  <div v-if="isModalOpen" class="modal-overlay">
+  <div v-if="isModalOpen" class="modal-overlay z-[2]">
     <div class="modal relative">
       <component :is="modalContent" :args="modal?.props" />
       <!-- <button class="absolute top-0 right-0" @click="closeModal">Close</button> -->

@@ -65,7 +65,7 @@ watch(title, (newTitle) => {
 <template>
   <ProtectLayout>
     <div class="flex flex-col items-center justify-between gap-4 mb-4 lg:flex-row">
-      <div class="grid grid-cols-4 gap-4 flex-1">
+      <div class="grid grid-cols-4 gap-4 flex-1 w-full">
         <Input class="col-span-4 lg:col-span-1" v-model="title" placeholder="Search..." />
         <Input v-model="price_min" placeholder="Min. Price" />
         <Input v-model="price_max" placeholder="Max. Price" />
@@ -73,7 +73,7 @@ watch(title, (newTitle) => {
       </div>
       <div class="flex-1 flex justify-end w-full">
         <router-link :to="ROUTE_PRODUCT_CREATE"
-          class="bg-blue-600 px-4 py-2 text-sm text-center rounded shadow text-white transform transition-all hover:scale-105 hover:bg-blue-700 hover:text-white active:scale-95 hover:cursor-pointer w-full lg:w-fit">Add
+          class="bg-blue-600 px-4 py-2 text-sm text-center rounded shadow text-white transform transition-all hover:scale-100 lg:hover:scale-105 hover:bg-blue-700 hover:text-white active:scale-95 hover:cursor-pointer w-full lg:w-fit">Add
           Product</router-link>
       </div>
     </div>

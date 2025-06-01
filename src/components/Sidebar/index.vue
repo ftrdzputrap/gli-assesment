@@ -1,9 +1,9 @@
 <template>
   <div>
-    <div v-if="isOpen" @click="closeSidebar" class="fixed inset-0 bg-black/70 bg-opacity-50 z-40 lg:hidden"></div>
+    <div v-if="isOpen" @click="closeSidebar" class="fixed inset-0 bg-black/70 bg-opacity-50 lg:hidden z-[1]"></div>
 
     <aside :class="[
-      'fixed inset-y-0 left-0 w-64 bg-white shadow-lg transform transition-transform duration-300 ease-in-out',
+      'fixed inset-y-0 left-0 w-64 bg-white shadow-lg transform transition-transform duration-300 ease-in-out z-[2]',
       isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
     ]">
       <div class="flex flex-col h-full">

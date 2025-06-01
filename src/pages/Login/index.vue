@@ -7,8 +7,10 @@
         </h2>
       </div>
       <form class="mt-8 space-y-6" @submit.prevent="onSignIn">
-        <div class="rounded-md shadow-sm -space-y-px">
-          <div>
+        <div class="rounded-md shadow-sm p-4 bg-white space-y-2">
+          <InputForm name="email" label="Email" type="email" />
+          <InputForm name="password" label="Password" type="password" />
+          <!-- <div>
             <label for="email" class="sr-only">Email address</label>
             <input id="email" v-model="email" name="email" type="email" required
               class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
@@ -19,14 +21,13 @@
             <input id="password" v-model="password" name="password" type="password" required
               class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
               placeholder="Password" />
+          </div> -->
+          <div class="mt-8">
+            <button type="submit"
+              class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+              Sign in
+            </button>
           </div>
-        </div>
-
-        <div>
-          <button type="submit"
-            class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-            Sign in
-          </button>
         </div>
       </form>
     </div>
@@ -38,20 +39,29 @@ import { inject, ref } from 'vue';
 import router from '@/router';
 import { signIn } from '@/services/auth.service';
 import { useAuthStore } from '@/stores/auth.store';
+import InputForm from '@/components/Form/InputForm.vue';
+import * as yup from 'yup';
+import { useForm } from 'vee-validate';
 
 const loader = inject('loader');
 
-const store = useAuthStore();
-const email = ref('john@mail.com');
-const password = ref('changeme');
+const { handleSubmit, values, errors, defineField, resetForm, setFieldValue } = useForm({
+  validationSchema: yup.object({
+    email: yup.string().email("Email is not valid").required('Email is required'),
+    password: yup.string().required('Password is required')
+  }),
+  initialValues: {
+    email: 'john@mail.com',
+    password: 'changeme'
+  },
+});
 
-const onSignIn = async (e) => {
+const store = useAuthStore();
+
+const onSignIn = handleSubmit(async (values) => {
   try {
     loader.showLoader();
-    const response = await signIn({
-      email: email.value,
-      password: password.value
-    });
+    const response = await signIn(values);
     store.setToken(response?.access_token);
     router.push('/dashboard');
   } catch (error) {
@@ -59,6 +69,6 @@ const onSignIn = async (e) => {
   } finally {
     loader.hideLoader();
   }
-}
+})
 
 </script>

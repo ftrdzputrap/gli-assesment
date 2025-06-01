@@ -9,6 +9,7 @@
           type="file"
           @change="handleFileChange"
           class="absolute inset-0 opacity-0 cursor-pointer"
+          :multiple="false"
         />
       </label>
     </div>

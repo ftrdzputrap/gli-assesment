@@ -15,7 +15,7 @@ const handleSidebar = () => {
 
 const path = computed(() => route.path);
 watch(path, () => {
-  commonStore.setIsOpen(!isOpen.value)
+  commonStore.setIsOpen(false)
 }, { immediate: true })
 
 </script>

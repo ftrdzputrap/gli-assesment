@@ -107,7 +107,7 @@ watch(
       <form @submit.prevent="onConfirmSubmit" class="space-y-6">
         <InputForm name="title" label="Title" @onValueChanged="onTitleChanged" />
         <InputForm name="slug" label="Slug" :disabled="true" />
-        <InputForm name="price" label="Price" />
+        <InputForm name="price" label="Price" type="number" />
         <InputForm name="description" label="Description" />
         <SelectCategory name="category" label="Category" />
 
